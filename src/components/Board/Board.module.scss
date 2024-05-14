@@ -1,0 +1,15 @@
+.board {
+  padding-top: 150px;
+  padding-bottom: 150px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid black;
+  &:first-child {
+    border-top: 1px solid black;
+  }
+}
