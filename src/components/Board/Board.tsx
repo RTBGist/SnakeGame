@@ -4,8 +4,9 @@ import {useState} from "react";
 import {Snake} from "../Snake/Snake";
 
 export const Board = () => {
-	const [rows, setRows] = useState(12);
-	const [cells, setCells] = useState(12);
+	const [rows, setRows] = useState(4);
+	const [cells, setCells] = useState(4);
+	const [noBorder, setNoBorder] = useState(true);
 
 	return (
 			<div className={classes.board}>
@@ -17,7 +18,7 @@ export const Board = () => {
 					</div>)
 				})}
 
-				<Snake />
+				<Snake cells={cells} rows={rows} noBorder={noBorder} />
 			</div>
 	)
 }

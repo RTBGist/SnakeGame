@@ -4,35 +4,22 @@ import {Coord, DirectionType} from "../../types/types";
 
 import classes from './Snake.module.scss';
 import {calcStepPX} from "../../libs/calcStepPX";
+import {moveDirection} from "../../libs/moveDirection";
 
-export const Snake = () => {
+interface SnakeProps {
+	cells: number;
+	rows: number;
+	noBorder: boolean;
+}
+
+export const Snake = (props: SnakeProps) => {
+	const {cells, rows, noBorder} = props;
 	const [direction, setDirection] = useState<DirectionType>('right');
 	const [coord, setCoord] = useState<Coord[]>([{x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}]);
 
 	useEffect(() => {
 		const onKeyPress = (event) => {
-			switch (event.key.toLowerCase()) {
-				case 'a':
-					setCoord(coord.map((point, index) =>
-							index === coord.length - 1 ? { x: point.x - 1, y: point.y } : coord[index + 1]
-					));
-					break;
-				case 'd':
-					setCoord(coord.map((point, index) =>
-							index === coord.length - 1 ? { x: point.x + 1, y: point.y } : coord[index + 1]
-					));
-					break;
-				case 'w':
-					setCoord(coord.map((point, index) =>
-							index === coord.length - 1 ? { x: point.x, y: point.y - 1 } : coord[index + 1]
-					));
-					break;
-				case 's':
-					setCoord(coord.map((point, index) =>
-							index === coord.length - 1 ? { x: point.x, y: point.y + 1 } : coord[index + 1]
-					));
-					break;
-			}
+			moveDirection(event.key.toLowerCase(), direction, setDirection, coord, setCoord, cells, rows, noBorder)
 		}
 
 		document.addEventListener('keypress', onKeyPress)
