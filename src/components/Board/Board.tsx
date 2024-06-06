@@ -8,7 +8,7 @@ export const Board = () => {
 	const [rows, setRows] = useState(4);
 	const [cells, setCells] = useState(4);
 	const [noBorder, setNoBorder] = useState(true);
-	const [coordFruit, setCoordFruit] = useState({x: 0, y: 2})
+	const [coordFruit, setCoordFruit] = useState({x: 2, y: 2})
 
 	return (
 			<div className={classes.board}>

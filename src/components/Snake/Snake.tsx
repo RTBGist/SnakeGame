@@ -4,9 +4,12 @@ import {Coord, DirectionType} from "../../types/types";
 
 import classes from './Snake.module.scss';
 import {calcStepPX} from "../../libs/calcStepPX";
-import {isValidDirection} from "../../libs/checkDirection";
+import {isValidDirection} from "../../libs/isValidDirection";
 import {getNewCoord} from "../../libs/getNewCoord";
-import {checkBorder} from "../../libs/checkBorder";
+import {resetCoord} from "../../libs/resetCoord";
+import {isAcrossBorder} from "../../libs/isAcrossBorder";
+import {isTakeFruit} from "../../libs/isTakeFruit";
+import {getNewDirection} from "../../libs/getNewDirection";
 
 
 interface SnakeProps {
@@ -21,48 +24,43 @@ export const Snake = (props: SnakeProps) => {
 	const [direction, setDirection] = useState<DirectionType>('right');
 	const [coord, setCoord] = useState<Coord[]>([{x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}]);
 
-	console.log('rerender')
-	console.log('coord', coord)
+	// console.log('rerender')
+	// console.log('coord', coord)
+
 
 	useEffect(() => {
-		console.log('mount')
+		// console.log('mount')
 		const onKeyPress = (event) => {
 			const key = event.key.toLowerCase();
 
-			// moveDirection(event.key.toLowerCase(), direction, setDirection, coord, setCoord, cells, rows, noBorder, coordFruit)
+			if(!isValidDirection(key, getNewDirection(key))) return false;
+			setDirection(getNewDirection(key));
 
-			switch (key) {
-				case 's':
-					if(!isValidDirection(key, direction)) return false;
+			setCoord((prevCoord) => {
+				let {x, y} = prevCoord[prevCoord.length - 1];
+				let newCoord = getNewCoord(key, {x, y});
 
-					setCoord((prevCoord) => {
-						let {x, y} = prevCoord[prevCoord.length - 1];
-						const newCoord = getNewCoord(key, {x, y});
+				if(isAcrossBorder(newCoord, rows, cells)) {
+					if(noBorder) {
+						newCoord = resetCoord(key, newCoord, rows, cells)
+					} else {
+						// TODO GameOver
+					}
+				}
 
-						checkBorder(key, newCoord, rows, noBorder)
+				if(isTakeFruit(newCoord, coordFruit)) {
+					// TODO передвинуть фрукт
+					return [...prevCoord, newCoord];
+				}
 
-						return [...prevCoord.slice(1), newCoord];
-					});
-
-
-
-					break;
-
-				case 'w':
-					break;
-
-				case 'a':
-					break;
-
-				case 'd':
-					break;
-			}
+				return [...prevCoord.slice(1), newCoord];
+			});
 		}
 
 
 		document.addEventListener('keypress', onKeyPress)
 		return () => {
-			console.log('unmount')
+			// console.log('unmount')
 			document.removeEventListener('keypress', onKeyPress)
 		}
 	}, [])
